@@ -18,19 +18,25 @@ pub mod Counter {
 
     #[event]
     #[derive(Drop, starknet::Event)]
-    enum Event {
+    pub enum Event {
         CounterIncreased: CounterIncreased,
         CounterDecreased: CounterDecreased,
+        CounterReset: CounterReset,
     }
 
     #[derive(Drop, starknet::Event)]
-    struct CounterIncreased {
-        counter: u32,
+    pub struct CounterIncreased {
+        pub counter: u32,
     }
 
     #[derive(Drop, starknet::Event)]
-    struct CounterDecreased {
-        counter: u32,
+    pub struct CounterReset {
+        pub counter: u32,
+    }
+
+    #[derive(Drop, starknet::Event)]
+    pub struct CounterDecreased {
+        pub counter: u32,
     }
 
     #[constructor]
@@ -64,6 +70,7 @@ pub mod Counter {
             let owner = self.owner.read();
             assert(caller == owner, 'Not the owner');
             self.counter.write(0);
+            self.emit(CounterReset { counter: 0 });
         }
     }
 }
